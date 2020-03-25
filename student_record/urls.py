@@ -26,6 +26,6 @@ def profile_view(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path('', include('student.urls')),
     path('accounts/profile/', profile_view),
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
- 

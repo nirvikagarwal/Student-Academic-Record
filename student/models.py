@@ -1,7 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Department(models.Model):
@@ -35,23 +34,23 @@ class AllSemester(models.Model): # student can select their Semesters from this 
     def __str__(self):
         return self.semester
 
-class User(AbstractUser):
+# class User(AbstractUser):
 
-    first_name    = models.CharField(max_length=256,blank=False,null=True)
-    last_name     = models.CharField(max_length=256,blank=False,null=True)
-    username      = models.CharField(max_length=256,blank=False, unique=True,null=True)
-    email         = models.EmailField(unique=True,null=True)
-    birth_date    = models.DateField(null=True)
-    reg           = models.CharField(verbose_name='Registration no.',max_length=8,blank=False,unique=True,null=True)
-    photograph    = models.ImageField(upload_to='student/images',null=True)
+#     first_name    = models.CharField(max_length=256,blank=False,null=True)
+#     last_name     = models.CharField(max_length=256,blank=False,null=True)
+#     username      = models.CharField(max_length=256,blank=False, unique=True,null=True)
+#     email         = models.EmailField(unique=True,null=True)
+#     birth_date    = models.DateField(null=True)
+#     reg           = models.CharField(verbose_name='Registration no.',max_length=8,blank=False,unique=True,null=True)
+#     photograph    = models.ImageField(upload_to='student/images',null=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = [
-        'username',
-    ]
+#     USERNAME_FIELD = 'email'
+#     REQUIRED_FIELDS = [
+#         'username',
+#     ]
 
-    def __str__(self):
-        return self.email
+#     def __str__(self):
+#         return self.email
 
 
 class StudentSubject(models.Model): # A model which has the subjects of the students semesterwise
@@ -71,12 +70,15 @@ class Marks(models.Model):
         return self.student.email
 
 class StudentProfile(models.Model):
+
     student = models.OneToOneField(User, on_delete=models.CASCADE)
+    birth_date    = models.DateField(null=True)
+    reg           = models.CharField(verbose_name='Registration no.',max_length=8,blank=False,unique=True,null=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     roll = models.CharField(verbose_name='Roll no.',max_length=8,unique=True,blank=False,null=True)
     address       = models.TextField(verbose_name='Address',blank=False,null=True)
     contact       = models.CharField(max_length=13,blank=False,unique=True,null=True)
+    photograph    = models.ImageField(upload_to='student/images',null=True)
 
     def __str__(self):
-        return self.student.email
-
+        return self.student.username

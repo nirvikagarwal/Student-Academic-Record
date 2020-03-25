@@ -64,7 +64,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'student_record.urls'
 
-AUTH_USER_MODEL = 'student.User'
 
 # ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_EMAIL_REQUIRED = True
