@@ -36,6 +36,7 @@ def registerView(request):
             if form.is_valid():
                 form.save()
                 student = form.cleaned_data.get('username')
+                request.user.studentprofile = request.user
                 messages.success(request, 'Accounts was created for '+ student)
                 return redirect('student:login')
         context = {
@@ -55,37 +56,20 @@ def logoutView(request):
 
 @login_required(login_url='student:login')
 def updateView(request):
-    student = User.objects.get(pk=request.user.pk)
-    # form = StudentProfileUpdateForm()
-    # if request.method == 'POST':
-    #     form = StudentProfileUpdateForm(request.POST)
-    #     if form.is_valid():
-    #         profile = form.save(commit=False)
-    #         profile.student = student
-    #         if 'photograph' in request.FILES:
-    #             profile.photograph = request.FILES['photograph']
-    #         profile.save()
-    #         return redirect('/')
-    # context = {
-    #     'form':form,
-    #     'student':student,
-    # }
-    form = StudentProfileUpdateForm(request.POST or None, request.FILES or None, instance=student)
-    if form.is_valid():
-        profile = form.save(commit=False)
-        profile.student = student
-        profile.save()
-        return redirect('/')
-    context={
+    student = request.user.studentprofile
+    form = StudentProfileUpdateForm(instance=student)
+    if request.method == 'POST':
+        form = StudentProfileUpdateForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+    context = {
         'form':form,
-        'student': student,
+        'student':student,
     }
+    
     return render(request, 'student/update_form.html', context)
 
 
 def index(request):
     return render(request, 'student/index.html')
 
-
-# def routine(request):
-#     return render(request, 'student/routine.html')

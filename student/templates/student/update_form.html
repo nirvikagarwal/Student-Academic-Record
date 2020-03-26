@@ -1,14 +1,42 @@
-{% extends 'student/base.html' %}
+{%  extends 'student/base.html' %}
 
 {% block title_block %}
     Update Profile
 {% endblock title_block %}
 
 {% block body_block %}
-    <h1>{{ student.username }}</h1>
-    <form action="" method="POST", enctype="multipart/form-data">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Submit">
-    </form>
-{% endblock body_block %}
+
+<style>
+	.profile-pic{
+		max-width: 400px;
+		max-height:400px;
+		margin: 0 auto;
+		border-radius: 50px;
+	}
+</style>
+
+<br>
+<div class="row">
+	<div class="col-md-3">
+		<div class="card card-body">
+			<img class="profile-pic" src="{{request.user.studentprofile.photograph.url}}" >
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div class="card card-body">
+            <h3>Update Profile Information</h3>
+            <br>
+            <br>
+			<form method="POST" action="" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{form.as_p}}
+		
+			<input class="btn btn-primary" type="submit" name="Update Information">
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}

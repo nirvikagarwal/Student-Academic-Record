@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'student',
+    'student.apps.StudentConfig',
 ]
 
 SITE_ID = 1
