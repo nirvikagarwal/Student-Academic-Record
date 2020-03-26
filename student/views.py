@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from student.forms import StudentRegistrationForm, StudentProfileUpdateForm
+from student.forms import StudentRegistrationForm, StudentProfileUpdateForm, StudentSubjectForm
 from student.models import *
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -66,10 +66,24 @@ def updateView(request):
         'form':form,
         'student':student,
     }
-    
     return render(request, 'student/update_form.html', context)
+
+
+# Having Problem to set the subjects of a student
+@login_required(login_url='student:login')
+def subjectView(request):
+    student = request.user
+    form = StudentSubjectForm(instance=student)
+    if request.method == 'POST':
+        form = StudentSubjectForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+    context = {
+        'form':form,
+        'student':student,
+    }
+    return render(request,'student/subjects.html', context)
 
 
 def index(request):
     return render(request, 'student/index.html')
-

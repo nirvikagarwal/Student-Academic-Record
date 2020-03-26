@@ -9,5 +9,6 @@ urlpatterns = [
     path('student/login/', views.loginView, name='login'),
     path('student/logout/', views.logoutView, name='logout'),
     path('student/update/', views.updateView, name='update'),
+    path('student/subjects/', views.subjectView, name='subjects')
     #path('routine/', views.routine, name='routine'),
 ]

@@ -38,20 +38,24 @@ class AllSemester(models.Model): # student can select their Semesters from this 
 
 
 class StudentSubject(models.Model): # A model which has the subjects of the students semesterwise
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     semester = models.ForeignKey(AllSemester, on_delete=models.CASCADE, null=True)
     subjects = models.ManyToManyField(AllSubject)
 
 
 # Model which has the marks of all subjects of a student in a semester
-class Marks(models.Model):  
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-    semester = models.ForeignKey(AllSemester, on_delete=models.CASCADE)
-    subject = models.ForeignKey(AllSubject, on_delete=models.CASCADE)
+class StudentMarks(models.Model):  
+    student = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    semester = models.ForeignKey(AllSemester, on_delete=models.CASCADE, null=True)
+    subject = models.ForeignKey(AllSubject, on_delete=models.CASCADE, null=True)
     marks = models.FloatField(null=True)
 
     def __str__(self):
         return self.student.email
+
+# class Cgpa(models.Model):
+#     student = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+#     semester = models.ForeignKey()
 
 class StudentProfile(models.Model):
 
@@ -68,9 +72,12 @@ class StudentProfile(models.Model):
         return self.student.username
 
 
+# USED SIGNALS
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
 
     if created:
         StudentProfile.objects.create(student=instance)
-        print('Profile created')
+        StudentSubject.objects.create(student=instance)
+        StudentMarks.objects.create(student=instance)
+        print('Profile created')  # Added a print statement for verification
