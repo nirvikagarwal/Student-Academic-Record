@@ -42,6 +42,9 @@ class StudentSubject(models.Model): # A model which has the subjects of the stud
     semester = models.ForeignKey(AllSemester, on_delete=models.CASCADE, null=True)
     subjects = models.ManyToManyField(AllSubject)
 
+    def __str__(self):
+        return (self.student.first_name + ' ' + self.semester.semester)
+
 
 # Model which has the marks of all subjects of a student in a semester
 class StudentMarks(models.Model):  

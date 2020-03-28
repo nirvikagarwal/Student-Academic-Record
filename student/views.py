@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from student.forms import StudentRegistrationForm, StudentProfileUpdateForm, StudentSubjectForm
+from student.forms import *
 from student.models import *
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -73,16 +73,37 @@ def updateView(request):
 @login_required(login_url='student:login')
 def subjectView(request):
     student = request.user
-    form = StudentSubjectForm(instance=student)
+    form = StudentSubjectForm()
     if request.method == 'POST':
-        form = StudentSubjectForm(request.POST, instance=student)
+        form = StudentSubjectForm(request.POST)
         if form.is_valid():
-            form.save()
+            subject = form.save(commit=False)
+            subject.student = student
+            subject.save()
     context = {
         'form':form,
         'student':student,
     }
     return render(request,'student/subjects.html', context)
+
+
+@login_required(login_url='student:login')
+def enterMarks(request,pk):
+    student = request.user
+    semester = student.semester_set.get(pk=pk)
+    form = StudentMarksForm()
+    if request.method == 'POST':
+        form = StudentMarksForm(request.POST)
+        if form.is_valid():
+            marks = form.save(commit=False)
+            marks.student = student
+            marks.semester = semester
+            form.save()
+    context = {
+        'form':form,
+        'student':student
+    }
+    return render(request, 'student/marks.html', context)
 
 
 def index(request):

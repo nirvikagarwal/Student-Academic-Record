@@ -9,6 +9,7 @@ urlpatterns = [
     path('student/login/', views.loginView, name='login'),
     path('student/logout/', views.logoutView, name='logout'),
     path('student/update/', views.updateView, name='update'),
-    path('student/subjects/', views.subjectView, name='subjects')
+    path('student/subjects/', views.subjectView, name='subjects'),
+    path('students/marks/<int:pk>', views.enterMarks, name='marks'),
     #path('routine/', views.routine, name='routine'),
 ]
