@@ -104,7 +104,8 @@ def enterMarks(request,pk):
         if formset.is_valid():
             marks = formset.save(commit=False)
             # marks.student = student
-            marks.semester = semester
+            marks.semester = semester 
+            # for each inline element I want to save the semester field to the current semester
             marks.save()
     context = {
         'formset':formset,
