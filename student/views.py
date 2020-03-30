@@ -114,5 +114,5 @@ def enterMarks(request,pk):
     return render(request, 'student/marks.html', context)
 
 
-def index(request):
+def index(request):i
     return render(request, 'student/index.html')
