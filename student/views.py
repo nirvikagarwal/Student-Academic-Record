@@ -88,6 +88,34 @@ def subjectView(request):
     return render(request,'student/subjects.html', context)
 
 
+def cal_cgpa(student,semester):
+    student_subject = get_object_or_404(StudentSubject, student=student, semester=semester)
+    all_subjects = AllSubject.objects.filter(studentsubject=student_subject)
+    total_credits = 0
+    credit_points = 0
+    points = 0
+    for subject in all_subjects:
+        marks = StudentMarks.objects.get(student=student, semester=semester, subject=subject)
+        if marks.marks >=90:
+            points = 10
+        elif marks.marks >=80:
+            points = 9
+        elif marks.marks >=70:
+            points = 8
+        elif marks.marks >=60:
+            points = 7
+        elif marks.marks >=50:
+            points = 6
+        elif marks.marks >=40:
+            points = 5
+        elif marks.marks >=30:
+            points = 4
+        credit_points = credit_points + (points*subject.credit_points)
+        total_credits = total_credits + subject.credit_points
+    cgpa = credit_points/total_credits
+    return cgpa
+
+        
 @login_required(login_url='student:login')
 def enterMarks(request,pk):
     student = request.user
@@ -95,18 +123,24 @@ def enterMarks(request,pk):
     student_subject = get_object_or_404(StudentSubject, student=student, semester=semester)
     # all_subjects = AllSubject.objects.filter(studentsubject=student_subject)
     subject_count = AllSubject.objects.filter(studentsubject=student_subject).count()
-    MarksFormSet = inlineformset_factory(User, StudentMarks, fields=('subject','marks'), extra=subject_count)
+    MarksFormSet = inlineformset_factory(User, StudentMarks,fields=('semester','subject','marks'), extra=subject_count)
     # form = StudentMarksForm() 
-    formset = MarksFormSet(instance=student)
+    formset = MarksFormSet(initial = [{'semester':semester,}])
     if request.method == 'POST':
         # form = StudentMarksForm(request.POST)
         formset = MarksFormSet(request.POST, instance=student)
         if formset.is_valid():
-            marks = formset.save(commit=False)
-            # marks.student = student
-            marks.semester = semester 
+            formset.save(commit=False)
             # for each inline element I want to save the semester field to the current semester
-            marks.save()
+            for form in formset:
+                form.semester = semester
+                formset.save()
+            formset.save()
+            cgpa = cal_cgpa(student,semester)
+            student_cgpa = Cgpa(student=student, semester=semester, cgpa=cgpa)
+            student_cgpa.save()
+            return redirect('/')
+
     context = {
         'formset':formset,
         'student':student,
@@ -115,5 +149,9 @@ def enterMarks(request,pk):
     return render(request, 'student/marks.html', context)
 
 
-def index(request):i
+
+
+
+
+def index(request):
     return render(request, 'student/index.html')

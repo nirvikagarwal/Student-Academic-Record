@@ -54,9 +54,16 @@ class StudentMarks(models.Model):
     marks = models.FloatField(null=True)
 
     def __str__(self):
+        return (self.student.first_name)
+
+
+class Cgpa(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    semester = models.ForeignKey(AllSemester, on_delete=models.CASCADE, null=True)
+    cgpa = models.FloatField(null=True)
+
+    def __str__(self):
         return (self.student.first_name + ' ' + self.semester.semester)
-
-
 
 class StudentProfile(models.Model):
 
@@ -81,4 +88,5 @@ def create_profile(sender, instance, created, **kwargs):
         StudentProfile.objects.create(student=instance)
         StudentSubject.objects.create(student=instance)
         StudentMarks.objects.create(student=instance)
+        Cgpa.objects.create(student=instance)
         print('Profile created')  # Added a print statement for verification
