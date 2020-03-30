@@ -6,7 +6,7 @@ from student.forms import *
 from student.models import *
 from django.contrib import messages
 from django.contrib.auth.models import User
-
+from django.forms import inlineformset_factory
 # Create your views here.
 
 def loginView(request):
@@ -69,7 +69,7 @@ def updateView(request):
     return render(request, 'student/update_form.html', context)
 
 
-# Having Problem to set the subjects of a student
+
 @login_required(login_url='student:login')
 def subjectView(request):
     student = request.user
@@ -80,6 +80,7 @@ def subjectView(request):
             subject = form.save(commit=False)
             subject.student = student
             subject.save()
+            form.save_m2m()
     context = {
         'form':form,
         'student':student,
@@ -90,18 +91,25 @@ def subjectView(request):
 @login_required(login_url='student:login')
 def enterMarks(request,pk):
     student = request.user
-    semester = student.semester_set.get(pk=pk)
-    form = StudentMarksForm()
+    semester = AllSemester.objects.get(pk=pk)
+    student_subject = get_object_or_404(StudentSubject, student=student, semester=semester)
+    # all_subjects = AllSubject.objects.filter(studentsubject=student_subject)
+    subject_count = AllSubject.objects.filter(studentsubject=student_subject).count()
+    MarksFormSet = inlineformset_factory(User, StudentMarks, fields=('subject','marks'), extra=subject_count)
+    # form = StudentMarksForm() 
+    formset = MarksFormSet(instance=student)
     if request.method == 'POST':
-        form = StudentMarksForm(request.POST)
-        if form.is_valid():
-            marks = form.save(commit=False)
-            marks.student = student
+        # form = StudentMarksForm(request.POST)
+        formset = MarksFormSet(request.POST, instance=student)
+        if formset.is_valid():
+            marks = formset.save(commit=False)
+            # marks.student = student
             marks.semester = semester
-            form.save()
+            marks.save()
     context = {
-        'form':form,
-        'student':student
+        'formset':formset,
+        'student':student,
+        # 'all_subjects':all_subjects,
     }
     return render(request, 'student/marks.html', context)
 

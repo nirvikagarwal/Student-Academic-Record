@@ -50,15 +50,13 @@ class StudentSubject(models.Model): # A model which has the subjects of the stud
 class StudentMarks(models.Model):  
     student = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     semester = models.ForeignKey(AllSemester, on_delete=models.CASCADE, null=True)
-    subject = models.ForeignKey(AllSubject, on_delete=models.CASCADE, null=True)
+    subject = models.ForeignKey(AllSubject, on_delete=models.CASCADE, null=True,)
     marks = models.FloatField(null=True)
 
     def __str__(self):
-        return self.student.email
+        return (self.student.first_name + ' ' + self.semester.semester)
 
-# class Cgpa(models.Model):
-#     student = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-#     semester = models.ForeignKey()
+
 
 class StudentProfile(models.Model):
 
