@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 # Create your views here.
 
+
+# Login View
 def loginView(request):
     if request.user.is_authenticated:
         return redirect('/')
@@ -26,6 +28,7 @@ def loginView(request):
         return render(request, 'student/login_form.html', context=context)
 
 
+# For Registration
 def registerView(request):
     if request.user.is_authenticated:
         return redirect('/')
@@ -54,6 +57,7 @@ def logoutView(request):
         return redirect('/')
 
 
+# Updates the Student Profile
 @login_required(login_url='student:login')
 def updateView(request):
     student = request.user.studentprofile
@@ -69,7 +73,7 @@ def updateView(request):
     return render(request, 'student/update_form.html', context)
 
 
-
+# Function for storing the subjects of a student each semester
 @login_required(login_url='student:login')
 def subjectView(request):
     student = request.user
@@ -88,7 +92,19 @@ def subjectView(request):
     return render(request,'student/subjects.html', context)
 
 
-def cal_cgpa(student,semester):
+# Function for calculating the CGPA
+def cal_cgpa(student):
+    allSgpa = Sgpa.objects.filter(student=student)
+    semesters = Sgpa.objects.filter(student=student).count()
+    total = 0
+    for sgpa in allSgpa:
+        total += sgpa.sgpa
+    cgpa = total/semesters
+    return cgpa
+ 
+
+ # Function for calculating SGPA
+def cal_sgpa(student,semester):
     student_subject = get_object_or_404(StudentSubject, student=student, semester=semester)
     all_subjects = AllSubject.objects.filter(studentsubject=student_subject)
     total_credits = 0
@@ -112,10 +128,11 @@ def cal_cgpa(student,semester):
             points = 4
         credit_points = credit_points + (points*subject.credit_points)
         total_credits = total_credits + subject.credit_points
-    cgpa = credit_points/total_credits
-    return cgpa
+    sgpa = credit_points/total_credits
+    return sgpa
 
         
+# Function for entering the marks 
 @login_required(login_url='student:login')
 def enterMarks(request,pk):
     student = request.user
@@ -136,9 +153,14 @@ def enterMarks(request,pk):
                 form.semester = semester
                 formset.save()
             formset.save()
-            cgpa = cal_cgpa(student,semester)
-            student_cgpa = Cgpa(student=student, semester=semester, cgpa=cgpa)
+            sgpa = cal_sgpa(student,semester)
+            student_sgpa = Sgpa(student=student, semester=semester, sgpa=sgpa)
+            student_sgpa.save()
+            cgpa = cal_cgpa(student)
+            student_cgpa = Cgpa.objects.get(student=student)
+            student_cgpa.cgpa = cgpa
             student_cgpa.save()
+
             return redirect('/')
 
     context = {
@@ -149,8 +171,15 @@ def enterMarks(request,pk):
     return render(request, 'student/marks.html', context)
 
 
-
-
+@login_required(login_url='student:login')
+def selectSemester(request):
+    student = request.user
+    semesters = StudentSubject.objects.filter(student=student).count()
+    semester_list = AllSemester.objects.all()[:semesters]
+    context = {
+        'semester_list':semester_list,
+    }
+    return render(request, 'student/select_semester.html', context)
 
 
 def index(request):

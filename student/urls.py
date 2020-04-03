@@ -10,6 +10,7 @@ urlpatterns = [
     path('student/logout/', views.logoutView, name='logout'),
     path('student/update/', views.updateView, name='update'),
     path('student/subjects/', views.subjectView, name='subjects'),
-    path('student/marks/<int:pk>', views.enterMarks, name='marks'),
+    path('student/marks/<int:pk>/', views.enterMarks, name='marks'),
+    path('student/select_semester/', views.selectSemester, name='select_semester'),
     #path('routine/', views.routine, name='routine'),
 ]

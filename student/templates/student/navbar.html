@@ -11,6 +11,12 @@
         <li class="nav-item active">
             <a class="nav-link" href="https://admin.nitdgp.ac.in/files/academics/notices/2019/12/31/CLASS_ROUTINE_SECOND_SEM_EVEN_19_20_VXY9UQQ.pdf">Routine</a>
         </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'student:subjects' %}">Subjects</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'student:select_semester' %}">Enter Marks</a>
+        </li>
       </ul>
       <ul class="navbar-nav ml-auto">
         {% if request.user.is_authenticated %}
