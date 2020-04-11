@@ -120,7 +120,6 @@ def subjectView(request):
     student = request.user
     semesters = StudentSubject.objects.filter(student=student)
     subjects = StudentSubject.objects.filter(student=student)
-    subject_list = AllSubject.objects.filter(studentsubject=subjects)
     form = StudentSubjectForm()
     if request.method == 'POST':
         form = StudentSubjectForm(request.POST)
