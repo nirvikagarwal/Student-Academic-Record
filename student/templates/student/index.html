@@ -5,5 +5,86 @@
 {% endblock title_block %}
 
 {% block body_block %}
-    
+    <style>
+        .profile-pic{
+            max-width: 200px;
+            max-height:200px;
+            margin: 0 auto;
+            border-radius: 50px;
+        }
+        #semester{
+            background-color: #66b7c5;
+        }
+        #department{
+            background-color: #418592;
+        }
+        #cgpa{
+            background-color: rgb(80, 201, 177);
+        }
+    </style>
+    <br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="col-md">
+                    <div class="card text-center text-white  mb-3" id="department">
+                        <div class="card-header">
+                            <h4 class="card-title">Department</h4>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">{{ student.studentprofile.department }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col-md">
+                    <div class="card text-center text-white  mb-3" id="semester">
+                        <div class="card-header">
+                            <h4 class="card-title">Present Semester</h4>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">{{ present_semester }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col-md">
+                    <div class="card text-center text-white  mb-3" id="cgpa">
+                        <div class="card-header">
+                            <h4 class="card-title">CGPA</h4>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">{{ cgpa.cgpa }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Your Performance</h1>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Semester</th>
+                        <th>SGPA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for sgpa in sgpa_list %}
+                        <tr>
+                            <td>{{ sgpa.semester }}</td>
+                            <td>{{ sgpa.sgpa }}</td>
+                        </tr>
+                    {% endfor %}
+                        
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock body_block %}

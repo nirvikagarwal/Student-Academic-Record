@@ -66,30 +66,12 @@ def updateView(request):
         form = StudentProfileUpdateForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
+            return redirect('/')
     context = {
         'form':form,
         'student':student,
     }
     return render(request, 'student/update_form.html', context)
-
-
-# Function for storing the subjects of a student each semester
-@login_required(login_url='student:login')
-def subjectView(request):
-    student = request.user
-    form = StudentSubjectForm()
-    if request.method == 'POST':
-        form = StudentSubjectForm(request.POST)
-        if form.is_valid():
-            subject = form.save(commit=False)
-            subject.student = student
-            subject.save()
-            form.save_m2m()
-    context = {
-        'form':form,
-        'student':student,
-    }
-    return render(request,'student/subjects.html', context)
 
 
 # Function for calculating the CGPA
@@ -131,7 +113,32 @@ def cal_sgpa(student,semester):
     sgpa = credit_points/total_credits
     return sgpa
 
-        
+
+# Function for storing the subjects of a student each semester
+@login_required(login_url='student:login')
+def subjectView(request):
+    student = request.user
+    semesters = StudentSubject.objects.filter(student=student)
+    subjects = StudentSubject.objects.filter(student=student)
+    subject_list = AllSubject.objects.filter(studentsubject=subjects)
+    form = StudentSubjectForm()
+    if request.method == 'POST':
+        form = StudentSubjectForm(request.POST)
+        if form.is_valid():
+            subject = form.save(commit=False)
+            subject.student = student
+            subject.save()
+            form.save_m2m()
+    context = {
+        'form':form,
+        'student':student,
+        'semesters':semesters,
+        'subjects':subjects,
+        'subject_list':subject_list,
+    }
+    return render(request,'student/subjects.html', context)
+
+
 # Function for entering the marks 
 @login_required(login_url='student:login')
 def enterMarks(request,pk):
@@ -181,6 +188,18 @@ def selectSemester(request):
     }
     return render(request, 'student/select_semester.html', context)
 
-
+@login_required(login_url='student:login')
 def index(request):
-    return render(request, 'student/index.html')
+    student = request.user
+    cgpa = Cgpa.objects.get(student=student)
+    semester_count = StudentSubject.objects.filter(student=student).count() + 1
+    present_semester = AllSemester.objects.get(pk=semester_count)
+    sgpa_list = Sgpa.objects.filter(student=student)
+
+    context = {
+        'student':student,
+        'cgpa':cgpa,
+        'present_semester':present_semester,
+        'sgpa_list':sgpa_list,
+    }
+    return render(request, 'student/index.html',context)

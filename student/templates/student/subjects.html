@@ -6,34 +6,55 @@
 
 {% block body_block %}
 
-<style>
-	.profile-pic{
-		max-width: 400px;
-		max-height:400px;
-		margin: 0 auto;
-		border-radius: 50px;
-	}
-</style>
+	<style>
+		.profile-pic{
+			max-width: 200px;
+			max-height:200px;
+			margin: 0 auto;
+			border-radius: 50px;
+		}
+	</style>
 
-<br>
-<div class="row">
-	<div class="col-md-3">
-		<div class="card card-body">
-			<img class="profile-pic" src="{{request.user.studentprofile.photograph.url}}" >
+	<br>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card card-body">
+					<img class="profile-pic" src="{{request.user.studentprofile.photograph.url}}" >
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="card card-body">
+	
+					<h3>Select Your Subjects</h3>
+					<br>
+					<br>
+					<form class="form-group" method="POST" action="">
+	
+						{% csrf_token %}
+						{{form.as_p}}
+	
+						<input class="btn btn-primary" type="submit" name="Update Subject">
+					</form>
+				</div>
+			</div>
 		</div>
+		<br><br>
+		{{subjects.subjects.name}}
+		<br><br>
+		{% for semester in semesters %}
+			{{ semester.semester }}
+			{{ subjects }}
+		{% endfor %}
+		<br>
+		<br>
+		{{ subject_list}}
+		<br>
+		{% for subject in subjects %}
+			{{ subject.semester }}
+			{{ subject.subjects }}
+		{% endfor %}
+			
+			
 	</div>
-	<div class="col-md-9">
-		<div class="card card-body">
-            <h3>Select Your Subjects</h3>
-            <br>
-            <br>
-			<form method="POST" action="">
-				{% csrf_token %}
-				{{form.as_p}}
-		
-			<input class="btn btn-primary" type="submit" name="Update Subject">
-			</form>
-		</div>
-	</div>
-</div>
 {% endblock body_block %}
