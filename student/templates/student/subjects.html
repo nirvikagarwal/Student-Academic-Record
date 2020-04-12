@@ -18,42 +18,70 @@
 	<br>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-md-2">
 				<div class="card card-body">
 					<img class="profile-pic" src="{{request.user.studentprofile.photograph.url}}" >
 				</div>
 			</div>
-			<div class="col-md-9">
+			<div class="col-md-10">
 				<div class="card card-body">
-	
 					<h3>Select Your Subjects</h3>
 					<br>
 					<br>
 					<form class="form-group" method="POST" action="">
-	
 						{% csrf_token %}
 						{{form.as_p}}
-	
 						<input class="btn btn-primary" type="submit" name="Update Subject">
 					</form>
 				</div>
 			</div>
 		</div>
 		<br><br>
-		{{subjects.subjects.name}}
-		<br><br>
-		{% for semester in semesters %}
-			{{ semester.semester }}
-			{{ subjects }}
+		<!-- {{subjects.subjects.name}} -->
+		<div class="row">
+			{% for subjects in subject_list %}
+			<div class="col-md-4">
+				<div class="card">
+					<!-- <h5 class="card-header">{{ semester }}</h5> -->
+					<div class="card-body">
+						<h5 class="card-title">Subjects</h5>
+						<table class="table table-striped">
+							<thead class="thead-dark">
+								<tr>
+									<th>Subject Code</th>
+									<th>Subject Name</th>
+									<th>Credits</th>
+								</tr>
+							</thead>
+							<tbody>
+								
+								{% for subject in subjects %}
+									<tr>
+										<td>{{ subject.code }}</td>
+										<td>{{ subject.name }}</td>
+										<td>{{ subject.credit_points }}</td>
+									</tr>
+								{% endfor %}
+									
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% for row in subject_list %}
+			{% for item in row %}
+				{{ item }} <br>
+			{% endfor %}
 		{% endfor %}
+			
+		<!-- {{ subject_list}} -->
 		<br>
-		<br>
-		{{ subject_list}}
-		<br>
-		{% for subject in subjects %}
+		<!-- {% for subject in subjects %}
 			{{ subject.semester }}
 			{{ subject.subjects }}
-		{% endfor %}
+		{% endfor %} -->
 			
 			
 	</div>

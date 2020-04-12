@@ -118,8 +118,15 @@ def cal_sgpa(student,semester):
 @login_required(login_url='student:login')
 def subjectView(request):
     student = request.user
+    # semesters = StudentSubject.objects.filter(student=student)
+    # subjects = StudentSubject.objects.filter(student=student)
+    subject_list = []
     semesters = StudentSubject.objects.filter(student=student)
-    subjects = StudentSubject.objects.filter(student=student)
+    for semester in semesters:
+        student_subject = StudentSubject.objects.get(student=student,semester=semester.semester)
+        subjects = AllSubject.objects.filter(studentsubject=student_subject)
+        subject_list.append(subjects)
+
     form = StudentSubjectForm()
     if request.method == 'POST':
         form = StudentSubjectForm(request.POST)
