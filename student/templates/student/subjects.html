@@ -38,13 +38,14 @@
 		</div>
 		<br><br>
 		<!-- {{subjects.subjects.name}} -->
+		{% regroup subject_list by semester as semester_list %}
 		<div class="row">
-			{% for subjects in subject_list %}
+			{% for semester in semester_list %}
 			<div class="col-md-4">
 				<div class="card">
-					<!-- <h5 class="card-header">{{ semester }}</h5> -->
+					<h5 class="card-header">{{ semester.grouper }}</h5>
 					<div class="card-body">
-						<h5 class="card-title">Subjects</h5>
+						<h5 class="card-title">Subjects Opted</h5>
 						<table class="table table-striped">
 							<thead class="thead-dark">
 								<tr>
@@ -55,11 +56,11 @@
 							</thead>
 							<tbody>
 								
-								{% for subject in subjects %}
+								{% for subject in semester.list %}
 									<tr>
 										<td>{{ subject.code }}</td>
 										<td>{{ subject.name }}</td>
-										<td>{{ subject.credit_points }}</td>
+										<td>{{ subject.credits }}</td>
 									</tr>
 								{% endfor %}
 									
@@ -70,7 +71,7 @@
 			</div>
 			{% endfor %}
 		</div>
-		{% for row in subject_list %}
+		<!-- {% for row in subject_list %}
 			{% for item in row %}
 				{{ item }} <br>
 			{% endfor %}
@@ -82,7 +83,6 @@
 			{{ subject.semester }}
 			{{ subject.subjects }}
 		{% endfor %} -->
-			
 			
 	</div>
 {% endblock body_block %}

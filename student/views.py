@@ -125,7 +125,15 @@ def subjectView(request):
     for semester in semesters:
         student_subject = StudentSubject.objects.get(student=student,semester=semester.semester)
         subjects = AllSubject.objects.filter(studentsubject=student_subject)
-        subject_list.append(subjects)
+        for subject in subjects:
+            subject_list.append(
+                {
+                    'semester':semester.semester,
+                    'name':subject.name,
+                    'code':subject.code,
+                    'credits':subject.credit_points,
+                }
+            )
 
     form = StudentSubjectForm()
     if request.method == 'POST':
@@ -198,7 +206,7 @@ def selectSemester(request):
 def index(request):
     student = request.user
     cgpa = Cgpa.objects.get(student=student)
-    semester_count = StudentSubject.objects.filter(student=student).count() + 1
+    semester_count = Sgpa.objects.filter(student=student).count() + 1
     present_semester = AllSemester.objects.get(pk=semester_count)
     sgpa_list = Sgpa.objects.filter(student=student)
 
