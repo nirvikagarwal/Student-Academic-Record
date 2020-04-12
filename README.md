@@ -17,9 +17,9 @@
 
 <h4>In order to getting this project runnning on your system execute the following commands in the terminal</h4>
 
-<code>mkdir <Create a new folder> </code>
+<code>mkdir Student-Academic-Record</code>
 
-<code>cd <Created Folder> </code>
+<code>cd Student-Academic-Record </code>
 
 <h5>Setting up the virtual environment</h5>
 
